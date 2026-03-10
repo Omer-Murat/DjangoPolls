@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Seçenek Ekle/Düzenle - Django Anketleri{% endblock %}
+
+{% block content %}
+<div class="card w-full max-w-lg mx-auto bg-base-100 shadow-xl border border-base-200 mt-10">
+    <div class="card-body">
+        <h2 class="card-title text-2xl font-bold mb-6">
+            {% if object %}Seçeneği Güncelle{% else %}Yeni Seçenek Ekle{% endif %}
+        </h2>
+
+        <form method="post" action="" class="space-y-4">
+            {% csrf_token %}
+            <div class="form-control w-full">
+                <label class="label font-bold text-base-content/80">Seçenek (Cevap)</label>
+                <input type="text" name="{{ form.choice_text.name }}"
+                    class="input input-lg input-bordered w-full font-semibold focus:input-primary"
+                    value="{{ form.choice_text.value|default_if_none:'' }}" placeholder="Örn: Mavi" required autofocus>
+                {% if form.choice_text.errors %}
+                <label class="label text-error text-sm">{{ form.choice_text.errors.as_text }}</label>
+                {% endif %}
+            </div>
+
+            <div class="card-actions justify-end mt-8 pt-6 border-t border-base-200">
+                <a href="javascript:history.back()" class="btn btn-ghost">İptal</a>
+                <button type="submit" class="btn btn-success px-8 text-white shadow-md">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Anketi Yönet - {{ object.question_text }}{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex gap-2 text-sm text-base-content/60">
+    <a href="{% url 'polls:my_polls' %}" class="hover:text-primary transition-colors">Yönetim Paneli</a>
+    <span>/</span>
+    <span class="font-semibold text-base-content/80">Anketi Düzenle</span>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative items-start">
+
+    <!-- Sol Taraf: Anket Bilgileri -->
+    <div class="card bg-base-100 border border-base-200 shadow-xl col-span-1 lg:col-span-1 lg:sticky lg:top-24">
+        <div class="card-body">
+            <h3 class="card-title text-xl border-b border-base-200 pb-2 mb-4">Soru Düzenle</h3>
+
+            <form method="post" action="{% url 'polls:manage' object.id %}" class="space-y-4">
+                {% csrf_token %}
+                <div class="form-control">
+                    <label class="label text-xs font-bold text-base-content/60 uppercase">Soru Metni</label>
+                    <textarea name="{{ form.question_text.name }}"
+                        class="textarea textarea-bordered h-24 text-base font-semibold leading-tight focus:textarea-primary">{{ form.question_text.value }}</textarea>
+                </div>
+
+                <div class="form-control">
+                    <label
+                        class="label cursor-pointer shadow-sm border border-base-200 rounded-lg p-3 hover:bg-base-200 transition-colors">
+                        <span class="label-text font-bold">Herkese Açık / Global</span>
+                        <input type="checkbox" name="{{ form.is_public.name }}" class="toggle toggle-sm toggle-primary"
+                            {% if form.is_public.value %}checked{% endif %}>
+                    </label>
+                </div>
+
+                <div class="mt-6 flex flex-col gap-2">
+                    <button type="submit" class="btn btn-primary w-full">Soru Bilgilerini Kaydet</button>
+                    <a href="{% url 'polls:detail' object.id %}" class="btn btn-outline btn-sm mt-2"
+                        target="_blank">Canlı Önizleme</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sağ Taraf: Şıklar (Choices) -->
+    <div class="col-span-1 lg:col-span-2 space-y-4">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-2xl font-extrabold text-base-content/80">Seçenekler (Cevaplar)</h2>
+                <div class="text-sm text-base-content/60 mt-1">Bu soru için insanların verebileceği olası yanıtlar.
+                    Toplam <span class="badge badge-sm">{{ object.choice_set.count }}</span> şık var.</div>
+            </div>
+            <a href="{% url 'polls:choice_add' object.id %}" class="btn btn-success btn-sm shadow-md gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Yeni Seçenek
+            </a>
+        </div>
+
+        {% if object.choice_set.all %}
+        <div class="space-y-3">
+            {% for choice in object.choice_set.all %}
+            <div class="card bg-base-100 border border-base-200 shadow-sm hover:border-primary/50 transition-colors">
+                <div class="card-body p-4 flex flex-row items-center justify-between">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-1">{{ choice.choice_text }}</h4>
+                        <div class="badge badge-ghost badge-sm font-semibold">{{ choice.votes }} Oy</div>
+                    </div>
+                    <div class="flex gap-2 ml-4">
+                        <a href="{% url 'polls:choice_edit' choice.id %}"
+                            class="btn btn-square btn-sm btn-outline btn-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                        </a>
+                        <a href="{% url 'polls:choice_delete' choice.id %}"
+                            class="btn btn-square btn-sm btn-outline btn-error">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-warning shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 w-6 h-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>Bu anket henüz hiç seçenek içermiyor! Kimse oy kullanamaz. Lütfen hemen sağ üstteki "Yeni Seçenek"
+                butonuyla şık ekleyin.</span>
+        </div>
+        {% endif %}
+
+        <div class="divider mt-8">Tehlikeli Bölge</div>
+        <div class="flex justify-end mb-10">
+            <a href="{% url 'polls:delete' object.id %}" class="btn btn-error btn-outline shadow-sm mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Bu Anketi Komple Sil
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

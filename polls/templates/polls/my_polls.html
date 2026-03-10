@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Kendi Anketlerim - Django Anketleri{% endblock %}
+
+{% block content %}
+<div class="card w-full bg-base-100 shadow-xl border border-base-200 mt-6 md:mt-10">
+    <div class="card-body py-8 md:py-10">
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-base-200 pb-6">
+            <div>
+                <span
+                    class="badge badge-primary badge-outline mb-2 font-semibold uppercase tracking-widest text-xs">Yönetim
+                    Paneli</span>
+                <h1 class="card-title text-3xl font-extrabold text-base-content/90">Kendi Anketlerim</h1>
+            </div>
+            <a href="{% url 'polls:create' %}" class="btn btn-primary shadow-sm flex gap-2 w-full md:w-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Yeni Anket Oluştur
+            </a>
+        </div>
+
+        {% if latest_question_list %}
+        <div class="overflow-x-auto w-full">
+            <table class="table w-full">
+                <!-- head -->
+                <thead>
+                    <tr>
+                        <th>Soru</th>
+                        <th>Oluşturulma Tarihi</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in latest_question_list %}
+                    <tr class="hover">
+                        <td>
+                            <div class="font-bold text-base">{{ question.question_text }}</div>
+                            <div class="text-xs text-base-content/60">{{ question.choice_set.count }} Seçenek</div>
+                        </td>
+                        <td>{{ question.pub_date|date:"d M Y" }}</td>
+                        <td>
+                            {% if question.is_public %}
+                            <div class="badge badge-success gap-1 text-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                </svg>
+                                Herkese Açık
+                            </div>
+                            {% else %}
+                            <div class="badge badge-neutral gap-1 text-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                </svg>
+                                Gizli (Link ile)
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td class="flex gap-2">
+                            <a href="{% url 'polls:detail' question.id %}" class="btn btn-sm btn-ghost"
+                                title="Görüntüle">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </a>
+                            <a href="{% url 'polls:manage' question.id %}"
+                                class="btn btn-sm btn-square btn-outline btn-info" title="Yönet">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                            </a>
+                            <a href="{% url 'polls:delete' question.id %}"
+                                class="btn btn-sm btn-square btn-outline btn-error" title="Sil">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info shadow-sm mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current flex-shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <h3 class="font-bold">Henüz hiç anket oluşturmadınız.</h3>
+                <div class="text-xs">Yeni bir anket oluşturarak başlayın!</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

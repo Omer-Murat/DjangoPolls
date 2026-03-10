@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@plugin "daisyui";
+@source "../../../**/*.html";
+
+@theme {
+  /* Using standard Daisy UI themes, or custom tokens here if needed */
+}

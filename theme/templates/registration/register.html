@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Kayıt Ol - Django Anketleri{% endblock %}
+
+{% block content %}
+<div class="card w-full max-w-md mx-auto bg-base-100 shadow-2xl border border-base-200 mt-10">
+    <div class="card-body">
+        <h2 class="card-title text-3xl font-extrabold mb-6 flex justify-center text-primary">Kayıt Ol</h2>
+
+        <form method="post" action="{% url 'polls:register' %}" class="space-y-4">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-control w-full">
+                <label class="label font-bold text-base-content/80">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <label class="label text-error text-sm">{{ field.errors.as_text }}</label>
+                {% endif %}
+                {% if field.help_text %}
+                <label class="label text-xs text-base-content/50">{{ field.help_text }}</label>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="form-control mt-8">
+                <button type="submit" class="btn btn-primary btn-block text-lg">Hesap Oluştur</button>
+            </div>
+        </form>
+
+        <div class="divider mt-6">Zaten hesabınız var mı?</div>
+
+        <div class="text-center">
+            <a href="{% url 'login' %}" class="link link-primary font-semibold">Giriş Yap</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

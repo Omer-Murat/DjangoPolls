@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Giriş Yap - Django Anketleri{% endblock %}
+
+{% block content %}
+<div class="card w-full max-w-md mx-auto bg-base-100 shadow-2xl border border-base-200 mt-10">
+    <div class="card-body">
+        <h2 class="card-title text-3xl font-extrabold mb-6 flex justify-center text-primary">Giriş Yap</h2>
+
+        {% if form.errors %}
+        <div class="alert alert-error shadow-sm mb-4">
+            <span>Kullanıcı adı veya şifre eşleşmedi. Lütfen tekrar deneyin.</span>
+        </div>
+        {% endif %}
+
+        {% if next %}
+        {% if user.is_authenticated %}
+        <div class="alert alert-warning shadow-sm mb-4">
+            <span>Bu sayfayı görmek için yeterli izniniz yok.</span>
+        </div>
+        {% else %}
+        <div class="alert alert-info shadow-sm mb-4">
+            <span>Lütfen bu sayfayı görmek için giriş yapın.</span>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}" class="space-y-4">
+            {% csrf_token %}
+            <div class="form-control w-full">
+                <label class="label font-bold text-base-content/80">{{ form.username.label_tag }}</label>
+                <input type="text" name="{{ form.username.name }}" class="input input-bordered w-full" autofocus
+                    required id="{{ form.username.id_for_label }}">
+            </div>
+            <div class="form-control w-full">
+                <label class="label font-bold text-base-content/80">{{ form.password.label_tag }}</label>
+                <input type="password" name="{{ form.password.name }}" class="input input-bordered w-full" required
+                    id="{{ form.password.id_for_label }}">
+            </div>
+
+            <input type="hidden" name="next" value="{{ next }}" />
+
+            <div class="form-control mt-8">
+                <button type="submit" class="btn btn-primary btn-block text-lg">Giriş Yap</button>
+            </div>
+        </form>
+
+        <div class="divider mt-6">Hesabınız yok mu?</div>
+
+        <div class="text-center">
+            <a href="{% url 'polls:register' %}" class="link link-secondary font-semibold">Yeni Hesap Oluştur</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card w-full lg:w-2/3 mx-auto bg-base-100 shadow-2xl border border-base-200 mt-6 relative overflow-hidden">
+    <!-- Decorative background element -->
+    <div class="absolute -top-10 -left-10 w-32 h-32 bg-secondary/10 rounded-full blur-2xl pointer-events-none"></div>
+
+    <div class="card-body py-8 md:py-10">
+
+        <a href="{% url 'polls:index' %}"
+            class="btn btn-ghost btn-sm w-fit mb-4 gap-2 text-base-content/60 hover:text-primary transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Anketlere Dön
+        </a>
+
+        <div class="mb-8">
+            <span class="badge badge-secondary badge-outline mb-3 font-semibold uppercase tracking-wider text-xs">Anket
+                Sorusu</span>
+            <h1 class="card-title text-3xl md:text-4xl font-extrabold text-base-content/90 leading-tight">
+                {{ question.question_text }}
+            </h1>
+            <p class="text-sm text-base-content/50 mt-2 font-medium">{{ question.pub_date|timesince }} önce yayınlandı
+            </p>
+        </div>
+
+        {% if error_message %}
+        <div class="alert alert-error shadow-sm mb-6 rounded-xl border-l-4 border-error-content bg-error/10">
+            <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-error flex-shrink-0 h-6 w-6" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span class="text-error-content font-bold">{{ error_message }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <form action="{% url 'polls:vote' question.id %}" method="post" class="relative z-10">
+            {% csrf_token %}
+            <div class="form-control mb-10 space-y-4">
+                {% for choice in question.choice_set.all %}
+                <label
+                    class="label cursor-pointer justify-start gap-4 p-5 border-2 border-base-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 group has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:shadow-md">
+                    <input type="radio" name="choice" id="choice{{forloop.counter}}" value="{{choice.id}}"
+                        class="radio radio-primary radio-md transition-all group-hover:scale-110" required />
+                    <span
+                        class="label-text text-xl font-medium text-base-content/80 group-hover:text-base-content">{{choice.choice_text}}</span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <div class="card-actions justify-end border-t border-base-200 pt-6">
+                <button type="submit"
+                    class="btn btn-primary btn-lg shadow-lg hover:shadow-xl transition-all btn-block sm:btn-wide group">
+                    Oy Ver
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 ml-1 group-hover:translate-x-1 transition-transform" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock content %}

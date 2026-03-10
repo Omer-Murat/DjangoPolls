@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Anketi Sil - Django Anketleri{% endblock %}
+
+{% block content %}
+<div class="card w-full max-w-lg mx-auto bg-base-100 shadow-2xl border border-error/50 mt-10">
+    <div class="card-body items-center text-center py-10">
+        <div class="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center text-error mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        </div>
+
+        <h2 class="card-title text-2xl font-bold mb-2">Anketi Silmek İstediğinize Emin Misiniz?</h2>
+        <p class="text-base-content/70">"<strong class="text-base-content">{{ object.question_text }}</strong>" anketini
+            ve içindeki tüm seçenekleri ve verilen <strong class="text-error">tüm oyları kalıcı olarak</strong>
+            sileceksiniz. Bu işlem geri alınamaz.</p>
+
+        <form method="post" action="" class="w-full mt-8">
+            {% csrf_token %}
+            <div class="flex flex-col sm:flex-row gap-3 justify-center w-full">
+                <a href="{% url 'polls:manage' object.id %}" class="btn btn-ghost sm:w-1/2">Vazgeç</a>
+                <button type="submit" class="btn btn-error text-white sm:w-1/2 shadow-lg shadow-error/30">Evet, Kalıcı
+                    Olarak Sil</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

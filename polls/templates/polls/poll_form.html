@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Anket Formu - Django Anketleri{% endblock %}
+
+{% block content %}
+<div class="card w-full max-w-2xl mx-auto bg-base-100 shadow-xl border border-base-200 mt-10">
+    <div class="card-body">
+        <h2 class="card-title text-2xl font-bold mb-6">
+            {% if object %}Anketi Düzenle{% else %}Yeni Anket Oluştur{% endif %}
+        </h2>
+
+        <form method="post" action="" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="form-control w-full">
+                <label class="label font-bold text-base-content/80">Anket Sorusu</label>
+                <input type="text" name="{{ form.question_text.name }}" class="input input-bordered w-full"
+                    value="{{ form.question_text.value|default_if_none:'' }}" required autofocus>
+                {% if form.question_text.errors %}
+                <label class="label text-error text-sm">{{ form.question_text.errors.as_text }}</label>
+                {% endif %}
+            </div>
+
+            <div class="form-control hover:bg-base-200/50 p-4 rounded-xl border border-base-200 transition-colors">
+                <label class="label cursor-pointer flex justify-between items-center w-full shadow-sm m-0 p-0">
+                    <div class="flex flex-col">
+                        <span class="label-text font-bold text-base">Herkese Açık (Global) Yap</span>
+                        <span class="label-text-alt text-base-content/60 mt-1">Kapalı olursa sadece anketin URL linkini
+                            yolladığınız kişiler görüp oy verebilir. Ana sayfada listelenmez.</span>
+                    </div>
+                    <input type="checkbox" name="{{ form.is_public.name }}" class="toggle toggle-primary toggle-lg" {%
+                        if form.is_public.value or not object %}checked{% endif %}>
+                </label>
+            </div>
+
+            <div class="card-actions flex justify-between items-center mt-8 pt-6 border-t border-base-200">
+                <a href="{% if object %}{% url 'polls:manage' object.id %}{% else %}{% url 'polls:my_polls' %}{% endif %}"
+                    class="btn btn-ghost">İptal</a>
+                <button type="submit" class="btn btn-primary px-8">Kaydet ve İlerle</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
