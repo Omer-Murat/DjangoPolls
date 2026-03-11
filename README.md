@@ -14,7 +14,7 @@ Bu proje, temel oylama ve anket yönetimi ihtiyaçlarını karşılamak üzere *
 ## 💻 Kullanılan Teknolojiler
 
 * **Backend:** Python 3.x, Django 4.x
-* **Frontend:** HTML5, CSS3, Tailwind
+* **Frontend:** HTML5, CSS, JavaScript, Tailwind
 * **Veritabanı:** SQLite (Geliştirme ortamı)
 * **Versiyon Kontrolü:** Git & GitHub
 
